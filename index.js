@@ -4,7 +4,7 @@ const port = process.env.PORT || 3000;
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
 
-  const msg = 'pipeline\n'
+  const msg = 'pipe\n'
   res.end(msg);
 });
 
