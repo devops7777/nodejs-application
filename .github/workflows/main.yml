@@ -1,0 +1,43 @@
+name: CI/CD with SonarQube
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install
+
+      # Add your build and test steps here
+      - name: Build and Test
+        run: |
+          # Replace these commands with your actual build and test commands
+          npm run build
+          npm test
+
+      - name: Install and configure SonarQube Scanner
+        run: |
+          curl -o sonar-scanner-cli.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-x.x.zip
+          unzip sonar-scanner-cli.zip
+          mv sonar-scanner-x.x /usr/local/sonar-scanner
+          echo "sonar.host.url=<SonarQube_Server_URL>" >> /usr/local/sonar-scanner/conf/sonar-scanner.properties
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+
+      - name: Run SonarQube Analysis
+        run: |
+          /usr/local/sonar-scanner/bin/sonar-scanner
+        working-directory: ${{ github.workspace }}
